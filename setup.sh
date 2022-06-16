@@ -3,8 +3,13 @@ set -e
 
 modprobe loop
 
+KEYBOARD_MANUFACTURER="Corsair"
+KEYBOARD_MODEL="Vengrance K65"
+
+BASE_DIR="/home/pi/KeyLimePi"
+
 echo "Setting Up KeyLimePi Directory..."
-mkdir -p ~/KeyLimePi && cd ~/KeyLimePi
+mkdir -p $BASE_DIR && cd $BASE_DIR
 touch keylimepi.log
 touch keylimepi.py.log
 chmod +x keylimepi.sh
@@ -41,13 +46,14 @@ DISKFILE="usbdisk.img"
 DISKDIR="usbdisk.d/"
 sudo test -f $DISKFILE && sudo rm $DISKFILE
 sudo test -d $DISKDIR && sudo rm -r $DISKDIR
-dd if=/dev/zero of=~/KeyLimePi/${DISKFILE} bs=1 count=0 seek=1G
-mkfs.exfat -n KeyLimePi ~/KeyLimePi/${DISKFILE}
+dd if=/dev/zero of=${BASE_DIR}/${DISKFILE} bs=1 count=0 seek=1G
+mkfs.exfat -n KeyLimePi ${BASE_DIR}/${DISKFILE}
 mkdir -p $DISKDIR
 
 echo "Writing Defaults to USB Disk"
-sudo mount -o loop -t exfat /home/pi/KeyLimePi/${DISKFILE} /home/pi/KeyLimePi/${DISKDIR}
-sudo cp default_keymap.json /home/pi/KeyLimePi/$DISKDIR
-sudo umount /home/pi/KeyLimePi/${DISKDIR}
+DEFAULT_CONFIG="${BASE_DIR}/keyboards/${KEYBOARD_MANUFACTURER}/${KEYBOARD_MODEL}/default_keymap.json"
+sudo mount -o loop -t exfat ${BASE_DIR}/${DISKFILE} ${BASE_DIR}/${DISKDIR}
+sudo cp ${DEFAULT_CONFIG} ${BASE_DIR}/${DISKDIR}
+sudo umount ${BASE_DIR}/${DISKDIR}
 
 echo "Done."
