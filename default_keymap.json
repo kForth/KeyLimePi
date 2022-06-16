@@ -1,0 +1,15 @@
+{
+    "source_url": "http://github.com/kforth/KeyLimePi",
+    "maintainer": "Kestin Goforth",
+    "last_modified": "2022-06-15",
+    "keyboard": {
+        "manufacturer": "Corsair",
+        "model": "Vengeance K65",
+        "url": "https://www.corsair.com/us/en/p/CH-9000040-NA",
+        "layout": "ansi",
+        "size": "tkl"
+    },
+    "keymap": {
+        
+    }
+}

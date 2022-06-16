@@ -1,0 +1,10 @@
+[Unit]
+Description=KeyLimePi USB Device Service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/home/pi/KeyLimePi/keylimepi.sh >> /home/pi/KeyLimePi/keylimepi.log
+
+[Install]
+WantedBy=multi-user.target
