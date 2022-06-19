@@ -12,16 +12,30 @@ KEYMAP_FILE = "keyboards/Corsair/Vengeance K65/default_keymap.json"
 
 # USB Keyboard Output
 class UsbKeyboardOutput:
+    # MOD_BYTES = 2
+    KEY_BYTES = 6
+
     DEVICE = '/dev/hidg0'
-    NULL = chr(0)
+    DEVICE = '.dev.hidg0'
+    NONE_KEY = scancodes['KEY_NONE']
+    MOD_KEYS = ("KEY_MOD_LCTRL", "KEY_MOD_LSHIFT", "KEY_MOD_LALT", "KEY_MOD_LMETA", "KEY_MOD_RCTRL", "KEY_MOD_RSHIFT", "KEY_MOD_RALT", "KEY_MOD_RMETA")
 
-    def write(self, str):
-        print(str)
-        # with open(self.DEVICE, 'rb+') as kb:
-        #     kb.write(str.encode())
+    def write(self, key_bytes):
+        print(key_bytes)
+        with open(self.DEVICE, 'wb+') as kb:
+            kb.write(''.join([chr(e) for e in key_bytes]).encode())
 
-    def write_key(self, key, *mods):
-        self.write(chr(sum(mods)) + self.NULL + chr(key) + self.NULL * 5)
+    def write_keys(self, active_keys):
+        keys = []
+        mods = []
+        for key in active_keys:
+            (mods if key in self.MOD_KEYS else keys).append(eval(key, scancodes))
+        if len(keys) > self.KEY_BYTES:
+            key_bytes = [scancodes['KEY_ERR_OVF']] * self.KEY_BYTES
+        else:
+            key_bytes = [sum(mods), self.NONE_KEY]
+            key_bytes += [keys[i] if i < len(keys) else self.NONE_KEY for i in range(self.KEY_BYTES)]
+        self.write([sum(mods), self.NONE_KEY] + key_bytes)
 
 # Full GPIO Keyboard Matrix (no shift registers)
 class GPIOMatrix:
@@ -32,18 +46,16 @@ class GPIOMatrix:
         GPIO.setup(self.ROW_PINS, GPIO.OUT)
         GPIO.setup(self.COL_PINS, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    def read(self):
-        for i, (row_keys) in enumerate(matrix):
+    def read(self, keymap_matrix):
+        keys = []
+        for i, (row_keys) in enumerate(keymap_matrix):
             GPIO.output(self.ROW_PINS[i], GPIO.HIGH)
             for j, key in enumerate(row_keys):
-                state = GPIO.input(self.COL_PINS[j])
-                if state != last_state[i][j]:
-                    print(i, j, key, state)
-                    # write_key_event(key, state)
+                if GPIO.input(self.COL_PINS[j]):
+                    keys.append(key)
             GPIO.output(self.ROW_PINS[i], GPIO.LOW)
-        last_state = state
         GPIO.cleanup()
-
+        return keys
     
 # Shift-Out Registers for Keyboard Matrix
 class ShiftOut:
@@ -97,35 +109,44 @@ class ShiftIn:
             GPIO.output(self.CLOCK_PIN, 1)
         return data
 
-shift_in = ShiftIn()
-shift_out = ShiftOut()
-usb_keyboard = UsbKeyboardOutput()
+class ShiftRegisterMatrix:
+    def __init__(self):
+        shift_in = ShiftIn()
+        shift_out = ShiftOut()
+
+    def read(self):
+        keys = []
+        for i, (row_keys) in enumerate(keymap):
+            self.shift_out.write(1 << 8)
+            row_state = self.shift_in.read()
+            for j, (key, state) in enumerate(zip(row_keys, row_state)):
+                if state:
+                    keys.append(key)
+        self.shift_out(0)
+        GPIO.cleanup()
+        return keys
 
 if __name__ == "__main__":
     # Setup RPi GPIO
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
+    keyboard_matrix = ShiftRegisterMatrix()
+    usb_keyboard = UsbKeyboardOutput()
+
     # Load Keymap file
     keymap_file = open(KEYMAP_FILE)
-    keymap = json.load(keymap_file)
-    matrix = keymap['keymap']
+    keyboard = json.load(keymap_file)
+    keymap = keyboard['keymap']
     keymap_file.close()
 
-    last_state = [[0] * len(matrix[0])] * len(matrix)
-
     while True:
-        et = time.time()
-        # Scan the keyboard matrix using shift registers
-        for i, (row_keys) in enumerate(matrix):
-            shift_out.write(1 << 8)
-            row_state = shift_in.read()
-            for j, (key, state) in enumerate(zip(row_keys, row_state)):
-                if state != last_state[i][j]:
-                    print(i, j, key, state)
-                    usb_keyboard.write_key(eval(key, scancodes))
-                    last_state[i][j] = state
-        # shift_out(0)
-        GPIO.cleanup()
+        start_time = time.time()
 
-        time.sleep(max(0, 0.001 - (time.time() - et))) # ~1kHz
+        # Scan the keyboard matrix using shift registers
+        active_keys = keyboard_matrix.read()
+
+        # Write the key state to the usb
+        usb_keyboard.write_keys(set(active_keys))
+
+        time.sleep(max(0, 0.001 - (time.time() - start_time))) # ~1kHz
