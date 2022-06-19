@@ -17,7 +17,7 @@ def setmode(*a, **k):
     return
 
 def input(*a, **k):
-    return randint(0, 1)
+    return randint(0, 100) == 1
 
 def output(*a, **k):
     return
