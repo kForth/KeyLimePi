@@ -10,13 +10,13 @@
         "size": "tkl"
     },
     "keymap": [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"],
+        ["KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A", "KEY_A"]
     ]
 }

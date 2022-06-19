@@ -3,9 +3,11 @@ import time
 import json
 
 # import RPi.GPIO as GPIO
-# KEYMAP_FILE = "/home/pi/KeyLimePi/usbdisk.d/keymap.json"
-
 import fake_gpio as GPIO
+
+from usb_hid_scancodes import scancodes
+
+# KEYMAP_FILE = "/home/pi/KeyLimePi/usbdisk.d/keymap.json"
 KEYMAP_FILE = "keyboards/Corsair/Vengeance K65/default_keymap.json"
 
 # USB Keyboard Output
@@ -14,14 +16,12 @@ class UsbKeyboardOutput:
     NULL = chr(0)
 
     def write(self, str):
-        with open(self.DEVICE, 'rb+') as kb:
-            kb.write(str.encode())
+        print(str)
+        # with open(self.DEVICE, 'rb+') as kb:
+        #     kb.write(str.encode())
 
-    def write_code(self, code, shift=False):
-        self.write((chr(32) if shift else self.NULL) + self.NULL + chr(code) + self.NULL * 5)
-
-    def write_char(self,char, shift=False):
-        self.write_code(ord(char[0].lower()) - 93, shift=shift)
+    def write_key(self, key, *mods):
+        self.write(chr(sum(mods)) + self.NULL + chr(key) + self.NULL * 5)
 
 # Full GPIO Keyboard Matrix (no shift registers)
 class GPIOMatrix:
@@ -99,6 +99,7 @@ class ShiftIn:
 
 shift_in = ShiftIn()
 shift_out = ShiftOut()
+usb_keyboard = UsbKeyboardOutput()
 
 if __name__ == "__main__":
     # Setup RPi GPIO
@@ -122,7 +123,7 @@ if __name__ == "__main__":
             for j, (key, state) in enumerate(zip(row_keys, row_state)):
                 if state != last_state[i][j]:
                     print(i, j, key, state)
-                    # write_key_event(key, state)
+                    usb_keyboard.write_key(eval(key, scancodes))
                     last_state[i][j] = state
         # shift_out(0)
         GPIO.cleanup()
