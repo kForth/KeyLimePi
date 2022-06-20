@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import time
 from enum import Enum
 
 import pigpio
