@@ -32,7 +32,7 @@ if __name__ == "__main__":
         active_keys = keyboard_matrix.read(keymap)
 
         # Write the key state to the usb
-        usb_keyboard.write_6kro(active_keys)
+        usb_keyboard.write_nkro(active_keys)
 
         # print(time.time() - start_time)
         time.sleep(max(0, (1/125) - (time.time() - start_time))) # ~125Hz

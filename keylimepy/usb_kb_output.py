@@ -34,6 +34,7 @@ class UsbKeyboardOutput:
 
         self._write([sum(mods), self.NONE_KEY] + key_bytes)
 
+    # https://www.devever.net/~hl/usbnkro
     def write_nkro(self, active_keys):
         keys = set()
         mods = set()
@@ -45,8 +46,5 @@ class UsbKeyboardOutput:
                 continue
             keys_val += 1 << key
         keys_val += 1 << 67
-        
-        mod_bytes = codecs.decode(f"{sum(mods):02x}{self.NONE_KEY:02x}", 'hex_codec')
-        key_bytes = codecs.decode(f"{keys_val:026x}", 'hex_codec')
                 
-        self._write(mod_bytes + key_bytes)
+        self._write(codecs.decode(f"{sum(mods):02x}{self.NONE_KEY:02x}{(0x01+0x02):02x}{(0x03+0x04):02x}{(0x05+0x06):02x}{keys_val:026x}", 'hex_codec'))
