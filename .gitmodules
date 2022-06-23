@@ -1,0 +1,3 @@
+[submodule "keylimepy/cheap_oled"]
+	path = keylimepy/cheap_oled
+	url = https://github.com/kForth/cheap_oled.git
