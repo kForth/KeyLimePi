@@ -10,6 +10,7 @@ if __name__ == "__main__":
     import pigpio
     # import RPi.GPIO as GPIO
     from PIL import ImageFont
+    from cheap_oled import OLED_SH1106, OLED_Canvas
 
     from shift_matrix_kb import ShiftRegisterMatrix
     from usb_kb_output import UsbKeyboardOutput
@@ -22,6 +23,15 @@ if __name__ == "__main__":
     # GPIO.setwarnings(False)
     # GPIO.setmode(GPIO.BCM)
 
+    font = ImageFont.truetype("/home/pi/KeyLimePi/keylimepy/oled/fonts/C&C Red Alert [INET].ttf", 24)
+    oled = OLED_SH1106(port=1, address=0x3C)
+
+    with OLED_Canvas(oled) as draw: 
+        draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+        draw.text((0, 0), f"Initialzing", 255, font=font)
+        draw.text((0, 20), f"KeyLimePi", 255, font=font)
+        # draw.text((0, 40), f"", 255, font=font)
+
     keyboard_matrix = ShiftRegisterMatrix(pi)
     usb_keyboard = UsbKeyboardOutput()
 
@@ -30,6 +40,9 @@ if __name__ == "__main__":
     keyboard = json.load(keymap_file)
     keymap = keyboard['keymap']
     keymap_file.close()
+
+    with OLED_Canvas(oled) as draw: 
+        draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
 
     while True:
         start_time = time.time()
