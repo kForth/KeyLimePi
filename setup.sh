@@ -1,7 +1,16 @@
 #!/bin/bash
 set -e
 
-modprobe loop
+# Enable I2C
+# Enable SPI
+
+echo "Installing Prerequisites"
+sudo apt-get install python3 libopenjp2-7 python3-pip pigpiod
+python3 -m pip install -r requirements.txt
+
+echo "Loading Required Modules"
+sudo modprobe libcomposite
+sudo modprobe loop
 
 KEYBOARD_MANUFACTURER="Corsair"
 KEYBOARD_MODEL="Vengrance K65"
@@ -32,7 +41,7 @@ if ! [ $(sudo grep -Fxc "loop" /etc/modules) ]; then
     echo "loop" | sudo tee -a /etc/modules
 fi
 
-echo "Creating Startup Service..."
+echo "Creating Startup Services..."
 SERVICE="keylimepi.service"
 SERVICE_FILE="/lib/systemd/system/${SERVICE}"
 sudo test -f $SERVICE_FILE && sudo rm $SERVICE_FILE
@@ -40,6 +49,7 @@ sudo cp keylimepi.service $SERVICE_FILE
 sudo chmod +x $SERVICE_FILE
 sudo systemctl daemon-reload
 sudo systemctl enable $SERVICE
+sudo systemctl enable pigpiod
 
 echo "Setting Up USB Disk Image..."
 DISKFILE="usbdisk.img"
