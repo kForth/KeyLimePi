@@ -1,6 +1,16 @@
+# Submodules
+keylimepy/cheap_oled
+
+# Python
+venv/
 __pycache__/
 *.pyc
 
-keylimepy/.dev.hidg0
-
+# MacOS
 .DS_Store
+
+# Visual Studio
+.vscode/
+
+# Misc
+keylimepy/.dev.hidg0
