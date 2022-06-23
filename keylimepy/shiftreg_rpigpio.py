@@ -1,7 +1,49 @@
 import RPi.GPIO as GPIO
-    
-# Shift-Out Registers for Keyboard Matrix
+
 class OutputShiftReg:
+    
+    '''
+    This class handles writing the values to one or more output shift registers, like a SN75HC595.
+
+    Example wiring for SN75HC595 chain:
+    TODO
+                        First chip
+
+    Pi GPIO ------> SH/LD |1 U 16| Vcc ------ 3V3
+    Pi GPIO ------> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER ------ Ground
+    Ground -------- GND   |8    9| Qh ------> next SER
+
+
+                        Middle chips
+
+    prior SH/LD --> SH/LD |1 U 16| Vcc ------ 3V3
+    prior CLK ----> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER <----- prior Qh
+    Ground -------- GND   |8    9| Qh ------> next SER
+
+
+                        Last chip
+
+    prior SH/LD --> SH/LD |1 U 16| Vcc ------ 3V3
+    prior CLK ----> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER <----- prior Qh
+    Ground -------- GND   |8    9| Qh ------> Pi GPIO
+
+    '''
+
     DATA_PIN = 16
     LATCH_PIN = 20
     CLOCK_PIN = 21
@@ -25,8 +67,51 @@ class OutputShiftReg:
         GPIO.output(self.LATCH_PIN, 1)
         GPIO.output(self.CLOCK_PIN, 1)
 
-# Shift-In Registers for Keyboard Matrix
-class ShiftIn:
+
+class InputShiftReg:
+
+    '''
+    This class handles reading the values from one or more input shift registers, like a SN74HC165.
+
+    Example wiring for SN74HC165 chain:
+    
+                        First chip
+
+    Pi GPIO ------> SH/LD |1 U 16| Vcc ------ 3V3
+    Pi GPIO ------> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER ------ Ground
+    Ground -------- GND   |8    9| Qh ------> next SER
+
+
+                        Middle chips
+
+    prior SH/LD --> SH/LD |1 U 16| Vcc ------ 3V3
+    prior CLK ----> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER <----- prior Qh
+    Ground -------- GND   |8    9| Qh ------> next SER
+
+
+                        Last chip
+
+    prior SH/LD --> SH/LD |1 U 16| Vcc ------ 3V3
+    prior CLK ----> CLK   |2   15| CLK INH -- Ground
+                    E     |3   14| D
+                    F     |4   13| C
+                    G     |5   12| B
+                    H     |6   11| A
+    Don't connect   /Qh   |7   10| SER <----- prior Qh
+    Ground -------- GND   |8    9| Qh ------> Pi GPIO
+
+    '''
+
     DATA_PIN = 9 #19
     LATCH_PIN = 25 # (20, 21)  # 2x 8-Bit Registers
     CLOCK_PIN = 11 #22

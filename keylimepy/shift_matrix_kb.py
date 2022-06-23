@@ -1,13 +1,10 @@
-# import pigpio
-
-from shift import ShiftOut
-from piso import PISO
+from shiftreg_pigpio import InputShiftReg, OutputShiftReg
 
 class ShiftRegisterMatrix:
     def __init__(self, pi):
         self._pi = pi
-        self.shift_out = ShiftOut(pi) # TODO: Pins
-        self.shift_in = PISO(pi, SH_LD=16, SPI_device=PISO.SPI.MAIN, chips=2)  # Pins 16, 9, 11
+        self.shift_out = OutputShiftReg(pi, 16, 20, 21)
+        self.shift_in = InputShiftReg(pi, SH_LD=25, chips=2)
 
     def read(self, keymap):
         for row_keys in keymap:

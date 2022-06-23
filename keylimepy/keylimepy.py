@@ -1,16 +1,19 @@
 #!/usr/bin/env python
-import time
-import json
-
-import pigpio
-
-from shift_matrix_kb import ShiftRegisterMatrix
-from usb_kb_output import UsbKeyboardOutput
 
 # KEYMAP_FILE = "/home/pi/KeyLimePi/usbdisk.d/keymap.json"
 KEYMAP_FILE = "../keyboards/Corsair/Vengeance K65/default_keymap.json"
 
 if __name__ == "__main__":
+    import time
+    import json
+
+    import pigpio
+    # import RPi.GPIO as GPIO
+    from PIL import ImageFont
+
+    from shift_matrix_kb import ShiftRegisterMatrix
+    from usb_kb_output import UsbKeyboardOutput
+
     # Setup GPIO
     pi = pigpio.pi()
     if not pi.connected:
